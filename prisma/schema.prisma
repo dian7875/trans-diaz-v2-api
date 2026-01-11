@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Client {
+  id         Int       @id @default(autoincrement())
+  name       String
+  status     Boolean   @default(true)
+  email      String?
+  phone      String?
+  direcction String?
+  invoices   Invoice[]
+  travels    Travel[]
+}
+
+model Driver {
+  id        Int       @id
+  name      String
+  startDate DateTime
+  endDate   DateTime?
+  status    Boolean   @default(true)
+  travels   Travel[]
+}
+
+model Truck {
+  plate    String    @id
+  name     String
+  status   Boolean   @default(true)
+  travels  Travel[]
+  expenses Expense[]
+}
+
+model Travel {
+  id           Int      @id @default(autoincrement())
+  travelCode   String
+  destination  String
+  noIVAmount   Int
+  withIVAmount Int
+  IVAmount     Int
+  travelDate   DateTime
+
+  expenses   Expense[]
+  client     Client?   @relation(fields: [clientId], references: [id])
+  clientId   Int?
+  driver     Driver?   @relation(fields: [driverId], references: [id])
+  driverId   Int?
+  truck      Truck?    @relation(fields: [truckPlate], references: [plate])
+  truckPlate String?
+  invoice    Invoice?  @relation(fields: [invoiceId], references: [id])
+  invoiceId  Int?
+}
+
+model Expense {
+  id     Int      @id @default(autoincrement())
+  amount Int
+  name   String
+  date   DateTime
+
+  truck      Truck?  @relation(fields: [truckPlate], references: [plate])
+  truckPlate String?
+  travel     Travel? @relation(fields: [travelId], references: [id])
+  travelId   Int?
+}
+
+model Invoice {
+  id            Int      @id @default(autoincrement())
+  invoiceNumber String
+  invoiceAmount Int
+  invoiceDate   DateTime
+  dueDate       DateTime
+  status        Boolean  @default(true)
+
+  travels  Travel[]
+  client   Client?  @relation(fields: [clientId], references: [id])
+  clientId Int?
+}
+
+model User {
+  id           Int     @id @default(autoincrement())
+  userName     String  @unique
+  password     String
+  refreshToken String?
+}
