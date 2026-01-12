@@ -27,7 +27,7 @@ export class TrucksService {
         `No se encontro el registro del camion con placa ${plate} `,
       );
     }
-    return truck
+    return truck;
   }
 
   async getMany({ page = 1, limit = 5, status }: statusAndPaginationFilterDto) {
@@ -89,6 +89,7 @@ export class TrucksService {
         },
         data: {
           name: data.name,
+          capacities: data.capacities
         },
       });
 
@@ -101,20 +102,26 @@ export class TrucksService {
     }
   }
 
-  async changeTruckStatus(
-    data: changeStatusTruckDto,
-  ): Promise<responseInterface> {
+  async changeTruckStatus(plate: string): Promise<responseInterface> {
     try {
+      const truck = await this.prisma.truck.findUnique({
+        where: { plate },
+      });
+      if (!truck) {
+        throw new NotFoundException(
+          `No se encontró el camión con placa ${plate}`,
+        );
+      }
       await this.prisma.truck.update({
         where: {
-          plate: data.plate,
+          plate: plate,
         },
         data: {
-          status: data.status,
+          status: !truck.status,
         },
       });
       return {
-        message: `Camion ${data.plate} editado con exito`,
+        message: `Camion ${plate} editado con exito`,
         success: true,
       };
     } catch (error) {

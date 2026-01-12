@@ -35,11 +35,12 @@ model Driver {
 }
 
 model Truck {
-  plate    String    @id
-  name     String
-  status   Boolean   @default(true)
-  travels  Travel[]
-  expenses Expense[]
+  plate      String    @id
+  name       String
+  status     Boolean   @default(true)
+  capacities String[]
+  travels    Travel[]
+  expenses   Expense[]
 }
 
 model Travel {
@@ -49,6 +50,7 @@ model Travel {
   noIVAmount   Int
   withIVAmount Int
   IVAmount     Int
+  taxFree      Boolean  @default(false)
   travelDate   DateTime
 
   expenses   Expense[]

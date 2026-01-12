@@ -46,13 +46,11 @@ export class TrucksController {
     return await this.trucksService.updateTruck(data);
   }
 
-  @Patch('/disable/:plate')
+  @Patch('/status/:plate')
   async disable(
-    @Param('plate') plate: string,
-    @Body() data: changeStatusTruckDto,
+    @Param('plate') plate: string
   ): Promise<responseInterface> {
-    data.plate = plate
-    return await this.trucksService.changeTruckStatus(data);
+    return await this.trucksService.changeTruckStatus(plate);
   }
 
   @Delete(':plate')
