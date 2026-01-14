@@ -50,7 +50,7 @@ export class DriversService {
       take,
     });
 
-    const total = await this.prisma.truck.count();
+    const total = await this.prisma.driver.count();
 
     return formatPaginatedResponse(data, page, limit, total);
   }

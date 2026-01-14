@@ -27,8 +27,8 @@ export class DriversController {
     return this.driversService.findAll(filters);
   }
   @Get('/list')
-  findAllNames(@Query() filters: PaginationDto) {
-    return this.driversService.findAll(filters);
+  findAllNames() {
+    return this.driversService.findOnlyNames();
   }
 
   @Get(':id')

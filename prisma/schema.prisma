@@ -21,6 +21,7 @@ model Client {
   email      String?
   phone      String?
   direcction String?
+  billerId   String?
   invoices   Invoice[]
   travels    Travel[]
 }
