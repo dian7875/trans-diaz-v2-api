@@ -62,6 +62,7 @@ export class DriversService {
       },
       select: {
         name: true,
+        id:true
       },
       orderBy: { name: 'asc' },
     });

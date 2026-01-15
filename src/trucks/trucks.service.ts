@@ -55,6 +55,7 @@ export class TrucksService {
       },
       select: {
         name: true,
+        plate:true
       },
       orderBy: { plate: 'asc' },
     });

@@ -50,6 +50,7 @@ export class ClientsService {
       },
       select: {
         name: true,
+         id:true
       },
       orderBy: { name: 'asc' },
     });

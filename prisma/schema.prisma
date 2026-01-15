@@ -66,10 +66,11 @@ model Travel {
 }
 
 model Expense {
-  id     Int      @id @default(autoincrement())
-  amount Int
-  name   String
-  date   DateTime
+  id      Int      @id @default(autoincrement())
+  amount  Int
+  name    String
+  date    DateTime
+  deleted Boolean  @default(false)
 
   truck      Truck?  @relation(fields: [truckPlate], references: [plate])
   truckPlate String?
