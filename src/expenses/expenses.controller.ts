@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ExpensesService } from './expenses.service';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
-import { PaginationDto } from 'src/common/pagination.dto';
 import { ExpensesFilters } from './dto/expenses-filter.dto';
 
 @Controller('expenses')

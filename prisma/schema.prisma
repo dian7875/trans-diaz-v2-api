@@ -53,6 +53,7 @@ model Travel {
   IVAmount     Int
   taxFree      Boolean  @default(false)
   travelDate   DateTime
+  invalid      Boolean  @default(false)
 
   expenses   Expense[]
   client     Client?   @relation(fields: [clientId], references: [id])
