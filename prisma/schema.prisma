@@ -86,10 +86,11 @@ model Invoice {
   invoiceDate   DateTime
   dueDate       DateTime
   status        Boolean  @default(true)
-
-  travels  Travel[]
-  client   Client?  @relation(fields: [clientId], references: [id])
-  clientId Int?
+  paid          Boolean  @default(false)
+  
+  travels       Travel[]
+  client        Client?  @relation(fields: [clientId], references: [id])
+  clientId      Int?
 }
 
 model User {

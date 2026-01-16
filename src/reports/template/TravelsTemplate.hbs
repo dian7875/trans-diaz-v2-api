@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Reporte de viajes</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      h1,
+      h2 {
+        text-align: start;
+        color: #333;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f4f4f4;
+      }
+      .footer {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+      }
+      header {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        align-items: center;
+      }
+      header h1,
+      header h2 {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span style='display: flex; flex-direction: column; gap: 10px;'>
+        <h1>Transportes Díaz</h1>
+        <h2>Amelia Díaz Baltonado</h2>
+        <h2>Cedula: 503090276</h2>
+        <h2>Telefono: 60685039</h2>
+        <h2>Correo: gastos13diaz@gmail.com</h2>
+        <h2>Reporte de viajes</h2>
+      </span>
+      <img
+        src='{{baseUrl}}'
+        alt='Logo'
+        width='290'
+        height='245'
+      />
+    </header>
+    <p><strong>Periodo:</strong>
+      {{formatOnlyDate startDate}}
+      a
+      {{formatOnlyDate endDate}}</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Factura</th>
+          <th>Fecha</th>
+          <th>Camion</th>
+          <th>Cliente</th>
+          <th>Chofer</th>
+          <th>Monto sin IVA</th>
+          <th>Monto con IVA</th>
+          <th>IVA</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each travels}}
+          <tr>
+            <td>{{this.travelCode}}</td>
+            <td>{{formatOnlyDate this.travelDate}}</td>
+            <td>{{this.truck.name}}</td>
+            <td>{{this.client.name}}</td>
+            <td>{{this.driver.name}}</td>
+            <td>₡ {{this.noIVAmount}}</td>
+            <td>₡ {{this.withIVAmount}}</td>
+            <td>₡ {{this.IVAmount}}</td>
+          </tr>
+        {{/each}}
+        <tr>
+          <td colspan='5'> <strong>Total</strong></td>
+          <td><strong>₡ {{this.totals.totalNoIVAmount}}</strong> </td>
+          <td><strong>₡ {{this.totals.totalWithIVAmount}}</strong> </td>
+          <td><strong>₡ {{this.totals.totalIVAmount}}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

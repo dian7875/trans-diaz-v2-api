@@ -112,8 +112,6 @@ export class ExpensesService {
     }
 
     await this.findOne(id);
-
-    console.log(data);
     try {
       await this.prisma.expense.update({
         where: { id },
@@ -125,7 +123,6 @@ export class ExpensesService {
         success: true,
       };
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException('Error al editar el gasto.');
     }
   }

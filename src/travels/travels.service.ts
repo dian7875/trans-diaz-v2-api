@@ -10,7 +10,6 @@ import { UpdateTravelDto } from './dto/update-travel.dto';
 import { PrismaService } from 'src/prismaConfig/prisma.service';
 import { responseInterface } from 'src/common/response.interface';
 import { Prisma } from 'generated/prisma/client';
-import { PaginationDto } from 'src/common/pagination.dto';
 import { formatPaginatedResponse } from 'src/utils/findsResponseFormatter';
 import { TravelFiltersDto } from './dto/travels-filters.dto';
 
@@ -133,7 +132,6 @@ export class TravelsService {
 
       return { message: 'Viaje actualizado con éxito', success: true };
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException('Error al actualizar el viaje.');
     }
   }
