@@ -11,7 +11,8 @@ import * as Handlebars from 'handlebars';
 import { chromium } from 'playwright';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Prisma } from 'generated/prisma/client';
+import { Prisma, Travel } from 'generated/prisma/client';
+import { TruckGroup } from './interfaces/internal.report.interface';
 
 @Injectable()
 export class ReportsService {
@@ -27,6 +28,14 @@ export class ReportsService {
         return format({ date, format: 'DD/MM/YYYY', tz: 'UTC' });
       },
     );
+    Handlebars.registerHelper('formatCurrency', (value: number) => {
+      if (typeof value !== 'number') return '0';
+
+      return value.toLocaleString('es-CR', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      });
+    });
   }
 
   async generateInternalReport(filter: InternalReportDto) {
@@ -67,7 +76,16 @@ export class ReportsService {
             name: true,
           },
         },
+        expenses: {
+          select: {
+            amount: true,
+          },
+          where: {
+            deleted: false,
+          },
+        },
       },
+
       orderBy: {
         travelDate: 'asc',
       },
@@ -79,30 +97,86 @@ export class ReportsService {
       );
     }
 
+    const travelsByTruck = travels.reduce(
+      (acc, travel) => {
+        const truckName = travel.truck?.name ?? 'Sin camión';
+
+        if (!acc[truckName]) {
+          acc[truckName] = {
+            travels: [] as Travel[],
+            totals: {
+              totalNoIVAmount: 0,
+              totalWithIVAmount: 0,
+              totalIVAmount: 0,
+            },
+            totalExpenses: 0,
+            remainingAmount: 0,
+          };
+        }
+
+        acc[truckName].travels.push(travel);
+
+        acc[truckName].totals.totalNoIVAmount += travel.noIVAmount;
+        acc[truckName].totals.totalWithIVAmount += travel.withIVAmount;
+        acc[truckName].totals.totalIVAmount += travel.IVAmount;
+
+        const travelExpenses = travel.expenses.reduce(
+          (sum, e) => sum + e.amount,
+          0,
+        );
+
+        acc[truckName].totalExpenses += travelExpenses;
+
+        acc[truckName].remainingAmount =
+          acc[truckName].totals.totalNoIVAmount - acc[truckName].totalExpenses;
+
+        return acc;
+      },
+      {} as Record<string, TruckGroup>,
+    );
+
     const totals = travels.reduce(
       (acc, travel) => {
         acc.totalNoIVAmount += travel.noIVAmount;
         acc.totalWithIVAmount += travel.withIVAmount;
         acc.totalIVAmount += travel.IVAmount;
+
+        const travelExpenses = travel.expenses.reduce(
+          (sum, e) => sum + e.amount,
+          0,
+        );
+
+        acc.totalExpenses += travelExpenses;
+
         return acc;
       },
-      { totalNoIVAmount: 0, totalWithIVAmount: 0, totalIVAmount: 0 },
+      {
+        totalNoIVAmount: 0,
+        totalWithIVAmount: 0,
+        totalIVAmount: 0,
+        totalExpenses: 0,
+        netIncome: 0,
+      },
     );
+
+    totals.netIncome = totals.totalNoIVAmount - totals.totalExpenses;
 
     const startDate = this.formatDate(from);
     const endDate = this.formatDate(to);
+
     return await this.GenerateDoc('TravelsTemplate', {
+      travelsByTruck,
       startDate,
       endDate,
-      travels,
       totals,
     });
   }
+
   async generateExternalReport({ from, to, clientId }: ExternalReportDto) {
     const startDate = this.formatDate(from);
     const endDate = this.formatDate(to);
 
-    if (clientId) {
+    if (!clientId) {
       throw new BadRequestException(
         'Seleccione el cliente para generar el reporte',
       );
@@ -129,17 +203,7 @@ export class ReportsService {
         travelDate: 'asc',
       },
       include: {
-        truck: {
-          select: {
-            name: true,
-          },
-        },
         client: {
-          select: {
-            name: true,
-          },
-        },
-        driver: {
           select: {
             name: true,
           },
@@ -169,9 +233,7 @@ export class ReportsService {
       totals,
     });
   }
-  async generateInvoicePdf({ clientId, from, to }: ExternalReportDto) {
-    const startDate = this.formatDate(from);
-    const endDate = this.formatDate(to);
+  async generateInvoicePdf(clientId:number) {
 
     if (!clientId) {
       throw new BadRequestException(
@@ -182,17 +244,7 @@ export class ReportsService {
     const where: Prisma.InvoiceWhereInput = {
       paid: false,
       status: true,
-      ...(clientId != null && { clientId }),
-      ...(from != null || to != null
-        ? {
-            travelDate: {
-              ...(from != null && { gte: new Date(from) }),
-              ...(to != null && {
-                lte: new Date(new Date(to).setHours(23, 59, 59, 999)),
-              }),
-            },
-          }
-        : {}),
+      ...(clientId != null && { clientId })
     };
 
     const invoices = await this.prisma.invoice.findMany({
@@ -214,8 +266,6 @@ export class ReportsService {
     );
 
     return await this.GenerateDoc('InvoicesTemplate', {
-      startDate,
-      endDate,
       invoices,
       total,
     });
@@ -372,7 +422,7 @@ export class ReportsService {
     const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
-      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' },
+      margin: { top: '20mm', right: '10mm', bottom: '20mm', left: '10mm' },
     });
     await browser.close();
     return Buffer.from(pdfBuffer);

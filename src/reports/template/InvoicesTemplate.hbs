@@ -1,0 +1,101 @@
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Reporte de transportes pendientes de pago</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        margin: 20px;
+      }
+
+      h1 {
+        font-size: 19px;
+        margin-bottom: 4px;
+      }
+
+      h2 {
+        font-size: 14px;
+        margin: 0;
+        font-weight: normal;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 6px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f4f4f4;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
+      }
+
+      .company-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .logo {
+        max-width: 220px;
+        height: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class='company-info'>
+        <h1>Facturas pendientes de pago</h1>
+        <h2>Transportes Díaz</h2>
+        <h2>Amelia Díaz Baltonado</h2>
+        <h2>Cédula: 503090276</h2>
+        <h2>Teléfono: 6068-5039</h2>
+        <h2>Correo: gastos13diaz@gmail.com</h2>
+      </div>
+
+      <img class='logo' src='{{baseUrl}}' alt='Logo' />
+    </header>
+
+    <table>
+      <thead>
+        <tr>
+          <th># Factura</th>
+          <th>Fecha de emisión</th>
+          <th>Fecha de vencimiento</th>
+          <th>Monto</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each invoices}}
+          <tr>
+            <td>{{this.invoiceNumber}}</td>
+            <td>{{formatOnlyDate this.invoiceDate}}</td>
+            <td>{{formatOnlyDate this.dueDate}}</td>
+            <td>₡ {{formatCurrency this.invoiceAmount}}</td>
+          </tr>
+        {{/each}}
+
+        <tr>
+          <td colspan='3'><strong>Total</strong></td>
+          <td><strong>₡ {{formatCurrency total}}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

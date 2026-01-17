@@ -7,30 +7,15 @@ import { ExternalReportDto, InternalReportDto } from './dto/report.filters.dto';
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
-  @Post('/generate/invoices')
-  async downloadInvoiceReport(
-    @Body() params: ExternalReportDto,
-    @Res() res: Response,
-  ) {
-    const pdfBuffer = await this.reportsService.generateInvoicePdf(params);
-    const fileName = this.reportsService.generateReportFileName('Facturas_Pendientes');
-
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename="${fileName}"`,
-    });
-    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
-
-    res.send(pdfBuffer);
-  }
-
   @Post('/generate/external')
   async downloadExternalReport(
     @Body() params: ExternalReportDto,
     @Res() res: Response,
   ) {
     const pdfBuffer = await this.reportsService.generateExternalReport(params);
-    const fileName = this.reportsService.generateReportFileName('Reporte_Transportes');
+    const fileName = this.reportsService.generateReportFileName(
+      'Reporte_Transportes',
+    );
 
     res.set({
       'Content-Type': 'application/pdf',
@@ -48,7 +33,25 @@ export class ReportsController {
   ) {
     const pdfBuffer = await this.reportsService.generateInternalReport(params);
 
-    const fileName = this.reportsService.generateReportFileName('Reporte_Transportes');;
+    const fileName = this.reportsService.generateReportFileName(
+      'Reporte_Transportes',
+    );
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${fileName}"`,
+    });
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+
+    res.send(pdfBuffer);
+  }
+
+  @Post('/generate/invoices/:id')
+  async downloadInvoiceReport(@Param('id') id: string, @Res() res: Response) {
+    const pdfBuffer = await this.reportsService.generateInvoicePdf(+id);
+    const fileName = this.reportsService.generateReportFileName(
+      'Facturas_Pendientes',
+    );
 
     res.set({
       'Content-Type': 'application/pdf',

@@ -5,97 +5,120 @@
     <style>
       body {
         font-family: Arial, sans-serif;
+        font-size: 12px;
         margin: 20px;
       }
-      h1,
-      h2 {
-        text-align: start;
-        color: #333;
+
+      h1 {
+        font-size: 18px;
+        margin-bottom: 5px;
       }
+
+      h3 {
+        font-size: 14px;
+        margin-top: 25px;
+        margin-bottom: 5px;
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 20px;
+        margin-bottom: 20px;
       }
+
       th,
       td {
         border: 1px solid #ddd;
-        padding: 8px;
+        padding: 6px;
         text-align: left;
       }
+
       th {
         background-color: #f4f4f4;
       }
-      .footer {
-        margin-top: 20px;
-        text-align: center;
-        font-size: 12px;
-        color: #666;
-      }
-      header {
-        display: flex;
-        gap: 10px;
-        justify-content: space-between;
-        align-items: center;
-      }
-      header h1,
-      header h2 {
-        margin: 0;
-      }
     </style>
   </head>
+
   <body>
-    <header>
-      <span style='display: flex; flex-direction: column; gap: 10px;'>
-        <h1>Transportes Díaz</h1>
-        <h2>Amelia Díaz Baltonado</h2>
-        <h2>Cedula: 503090276</h2>
-        <h2>Telefono: 60685039</h2>
-        <h2>Correo: gastos13diaz@gmail.com</h2>
-        <h2>Reporte de viajes</h2>
-      </span>
-      <img
-        src='{{baseUrl}}'
-        alt='Logo'
-        width='290'
-        height='245'
-      />
-    </header>
-    <p><strong>Periodo:</strong>
-      {{formatOnlyDate startDate}}
-      a
-      {{formatOnlyDate endDate}}</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Factura</th>
-          <th>Fecha</th>
-          <th>Camion</th>
-          <th>Cliente</th>
-          <th>Chofer</th>
-          <th>Monto sin IVA</th>
-          <th>Monto con IVA</th>
-          <th>IVA</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each travels}}
+    <h1>Reporte de viajes</h1>
+
+    <p>
+      <strong>Periodo:</strong>
+      {{startDate}} a {{endDate}}
+    </p>
+
+    {{#each travelsByTruck}}
+      <h3>Camión: {{@key}}</h3>
+
+      <table>
+        <thead>
           <tr>
-            <td>{{this.travelCode}}</td>
-            <td>{{formatOnlyDate this.travelDate}}</td>
-            <td>{{this.truck.name}}</td>
-            <td>{{this.client.name}}</td>
-            <td>{{this.driver.name}}</td>
-            <td>₡ {{this.noIVAmount}}</td>
-            <td>₡ {{this.withIVAmount}}</td>
-            <td>₡ {{this.IVAmount}}</td>
+            <th>Factura</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Chofer</th>
+            <th>Sin IVA</th>
+            <th>IVA</th>
+            <th>Con IVA</th>
           </tr>
-        {{/each}}
+        </thead>
+
+        <tbody>
+          {{#each this.travels}}
+            <tr>
+              <td>{{this.travelCode}}</td>
+              <td>{{formatOnlyDate this.travelDate}}</td>
+              <td>{{this.client.name}}</td>
+              <td>{{this.driver.name}}</td>
+              <td>₡ {{formatCurrency this.noIVAmount}}</td>
+              <td>₡ {{formatCurrency this.IVAmount}}</td>
+              <td>₡ {{formatCurrency this.withIVAmount}}</td>
+            </tr>
+          {{/each}}
+
+          <tr>
+            <td colspan='4'><strong>Total camión</strong></td>
+            <td><strong>₡ {{formatCurrency this.totals.totalNoIVAmount}}</strong></td>
+            <td><strong>₡ {{formatCurrency this.totals.totalIVAmount}}</strong></td>
+            <td><strong>₡ {{formatCurrency this.totals.totalWithIVAmount}}</strong></td>
+          </tr>
+
+          <tr>
+            <td colspan='6'><strong>Total gastos</strong></td>
+            <td><strong>₡ {{formatCurrency this.totalExpenses}}</strong></td>
+          </tr>
+
+          <tr>
+            <td colspan='6'><strong>Ingreso neto</strong></td>
+            <td><strong>₡ {{formatCurrency this.remainingAmount}}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    {{/each}}
+
+    <h3>Resumen general</h3>
+
+    <table>
+      <tbody>
         <tr>
-          <td colspan='5'> <strong>Total</strong></td>
-          <td><strong>₡ {{this.totals.totalNoIVAmount}}</strong> </td>
-          <td><strong>₡ {{this.totals.totalWithIVAmount}}</strong> </td>
-          <td><strong>₡ {{this.totals.totalIVAmount}}</strong></td>
+          <td>Total sin IVA</td>
+          <td>₡ {{formatCurrency totals.totalNoIVAmount}}</td>
+        </tr>
+        <tr>
+          <td>Total IVA</td>
+          <td>₡ {{formatCurrency totals.totalIVAmount}}</td>
+        </tr>
+        <tr>
+          <td>Total con IVA</td>
+          <td>₡ {{formatCurrency totals.totalWithIVAmount}}</td>
+        </tr>
+        <tr>
+          <td>Total gastos</td>
+          <td>₡ {{formatCurrency totals.totalExpenses}}</td>
+        </tr>
+        <tr>
+          <td><strong>Ingreso neto real</strong></td>
+          <td><strong>₡ {{formatCurrency totals.netIncome}}</strong></td>
         </tr>
       </tbody>
     </table>

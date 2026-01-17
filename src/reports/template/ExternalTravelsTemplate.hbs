@@ -1,0 +1,112 @@
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Reporte de viajes</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        margin: 20px;
+      }
+
+      h1 {
+        font-size: 19px;
+        margin-bottom: 4px;
+      }
+
+      h2 {
+        font-size: 14px;
+        margin: 0;
+        font-weight: normal;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 6px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f4f4f4;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
+      }
+
+      .company-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .logo {
+        max-width: 220px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class='company-info'>
+        <h1>Reporte de viajes</h1>
+        <h2>Transportes Díaz</h2>
+        <h2>Amelia Díaz Baltonado</h2>
+        <h2>Cédula: 503090276</h2>
+        <h2>Teléfono: 6068-5039</h2>
+        <h2>Correo: gastos13diaz@gmail.com</h2>
+      </div>
+
+      <img class='logo' src='{{baseUrl}}' alt='Logo' />
+    </header>
+
+    <p>
+      <strong>Periodo:</strong>
+      {{startDate}}
+      a
+      {{endDate}}
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Factura</th>
+          <th>Fecha</th>
+          <th>Monto sin IVA</th>
+          <th>IVA</th>
+          <th>Monto con IVA</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each travels}}
+          <tr>
+            <td>{{this.travelCode}}</td>
+            <td>{{formatOnlyDate this.travelDate}}</td>
+            <td>₡ {{formatCurrency this.noIVAmount}}</td>
+            <td>₡ {{formatCurrency this.IVAmount}}</td>
+            <td>₡ {{formatCurrency this.withIVAmount}}</td>
+          </tr>
+        {{/each}}
+
+        <tr>
+          <td colspan='2'><strong>Total</strong></td>
+          <td><strong>₡ {{formatCurrency totals.totalNoIVAmount}}</strong></td>
+          <td><strong>₡ {{formatCurrency totals.totalIVAmount}}</strong></td>
+          <td><strong>₡
+              {{formatCurrency totals.totalWithIVAmount}}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
