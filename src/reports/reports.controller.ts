@@ -46,6 +46,26 @@ export class ReportsController {
     res.send(pdfBuffer);
   }
 
+  @Post('/generate/expenses')
+  async downloadExpenseReport(
+    @Body() params: InternalReportDto,
+    @Res() res: Response,
+  ) {
+    const pdfBuffer = await this.reportsService.generateExpenseReport(params);
+
+    const fileName = this.reportsService.generateReportFileName(
+      'Reporte_Gastos',
+    );
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${fileName}"`,
+    });
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+
+    res.send(pdfBuffer);
+  }
+
   @Post('/generate/invoices/:id')
   async downloadInvoiceReport(@Param('id') id: string, @Res() res: Response) {
     const pdfBuffer = await this.reportsService.generateInvoicePdf(+id);

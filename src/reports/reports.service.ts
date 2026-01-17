@@ -12,7 +12,10 @@ import { chromium } from 'playwright';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Prisma, Travel } from 'generated/prisma/client';
-import { TruckGroup } from './interfaces/internal.report.interface';
+import {
+  ExpensesByTruck,
+  TruckGroup,
+} from './interfaces/internal.report.interface';
 
 @Injectable()
 export class ReportsService {
@@ -233,8 +236,86 @@ export class ReportsService {
       totals,
     });
   }
-  async generateInvoicePdf(clientId:number) {
 
+  async generateExpenseReport({ truckPlate, from, to }: InternalReportDto) {
+    const where: Prisma.ExpenseWhereInput = {
+      deleted: false,
+      ...(truckPlate != null && { truckPlate }),
+      ...(from != null || to != null
+        ? {
+            date: {
+              ...(from != null && { gte: new Date(from) }),
+              ...(to != null && {
+                lte: new Date(new Date(to).setHours(23, 59, 59, 999)),
+              }),
+            },
+          }
+        : {}),
+    };
+
+    const expenses = await this.prisma.expense.findMany({
+      where,
+      include: {
+        travel: {
+          select: {
+            travelCode: true,
+            destination: true,
+          },
+        },
+        truck: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        date: 'asc',
+      },
+    });
+
+    const expensesByTruck = expenses.reduce(
+      (acc, expense) => {
+        const truck =
+          expense.truck?.name ?? expense.travel?.destination ?? 'Sin camión';
+
+        if (!acc[truck]) {
+          acc[truck] = {
+            expenses: [],
+            totalExpenses: 0,
+          };
+        }
+
+        acc[truck].expenses.push({
+          date: expense.date,
+          name: expense.name,
+          amount: expense.amount,
+          travelCode: expense.travel?.travelCode,
+          destination: expense.travel?.destination,
+        });
+
+        acc[truck].totalExpenses += expense.amount;
+
+        return acc;
+      },
+      {} as Record<string, ExpensesByTruck>,
+    );
+
+    const totals = {
+      totalExpenses: expenses.reduce((sum, e) => sum + e.amount, 0),
+    };
+
+    const startDate = this.formatDate(from);
+    const endDate = this.formatDate(to);
+
+    return await this.GenerateDoc('ExpenseReport', {
+      expensesByTruck,
+      totals,
+      startDate,
+      endDate,
+    });
+  }
+
+  async generateInvoicePdf(clientId: number) {
     if (!clientId) {
       throw new BadRequestException(
         'Seleccione el cliente para generar el reporte',
@@ -244,7 +325,7 @@ export class ReportsService {
     const where: Prisma.InvoiceWhereInput = {
       paid: false,
       status: true,
-      ...(clientId != null && { clientId })
+      ...(clientId != null && { clientId }),
     };
 
     const invoices = await this.prisma.invoice.findMany({

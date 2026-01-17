@@ -1,0 +1,118 @@
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Reporte de gastos por camión</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        margin: 20px;
+      }
+
+      h1 {
+        font-size: 19px;
+        margin-bottom: 4px;
+      }
+
+      h2 {
+        font-size: 14px;
+        margin: 0;
+        font-weight: normal;
+      }
+
+      h3 {
+        font-size: 14px;
+        margin-top: 25px;
+        margin-bottom: 5px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 6px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f4f4f4;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
+      }
+
+      .company-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .logo {
+        max-width: 220px;
+        height: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class='company-info'>
+        <h1>Reporte de gastos</h1>
+        <h2>Transportes Díaz</h2>
+        <h2>Periodo: {{startDate}} a {{endDate}}</h2>
+      </div>
+    </header>
+
+    {{#each expensesByTruck}}
+      <h3>Camión: {{@key}}</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Viaje</th>
+            <th>Detalle</th>
+            <th>Monto</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {{#each this.expenses}}
+            <tr>
+              <td>{{formatOnlyDate this.date}}</td>
+              <td>{{this.travelCode}}-{{this.destination}}</td>
+              <td>{{this.name}}</td>
+              <td>₡ {{formatCurrency this.amount}}</td>
+            </tr>
+          {{/each}}
+
+          <tr>
+            <td colspan='3'><strong>Total gastos camión</strong></td>
+            <td><strong>₡ {{formatCurrency this.totalExpenses}}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    {{/each}}
+
+    <h3>Resumen general</h3>
+
+    <table>
+      <tbody>
+        <tr>
+          <td><strong>Total gastos</strong></td>
+          <td><strong>₡ {{formatCurrency totals.totalExpenses}}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
