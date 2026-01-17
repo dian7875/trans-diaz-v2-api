@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.json",
-  "assets": ["src/reports/template/**/*"],
+  "assets": ["src/reports/template/**/*","src/quotation/template/**/*"],
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
 }

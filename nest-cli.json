@@ -8,6 +8,10 @@
       {
         "include": "reports/template/**/*",
         "outDir": "dist/src"
+      },
+      {
+        "include": "quotation/template/**/*",
+        "outDir": "dist/src"
       }
     ]
   }
