@@ -72,8 +72,17 @@ export class InvoicesService {
         travels: {
           select: {
             id: true,
+            withIVAmount: true,
             noIVAmount: true,
             destination: true,
+            travelDate: true,
+            travelCode: true,
+          },
+          where: {
+            invalid: false,
+          },
+          orderBy: {
+            travelDate: 'asc',
           },
         },
       },

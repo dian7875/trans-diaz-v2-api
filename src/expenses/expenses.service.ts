@@ -81,6 +81,12 @@ export class ExpensesService {
             name: true,
           },
         },
+        travel: {
+          select: {
+            destination: true,
+            travelCode: true
+          },
+        },
       },
       orderBy: {
         date: 'desc',
