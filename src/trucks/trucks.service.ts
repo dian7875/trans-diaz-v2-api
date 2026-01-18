@@ -10,7 +10,8 @@ import { statusAndPaginationFilterDto } from 'src/common/statusFilter.dto';
 import { PrismaService } from 'src/prismaConfig/prisma.service';
 import { formatPaginatedResponse } from 'src/utils/findsResponseFormatter';
 import { CreateTruckDto } from './dto/create-truck.dto';
-import { changeStatusTruckDto, updateTruckDto } from './dto/update-truck.dto';
+import { updateTruckDto } from './dto/update-truck.dto';
+import { CalcBalanceDto } from './dto/filter-truck.dto';
 
 @Injectable()
 export class TrucksService {
@@ -55,7 +56,7 @@ export class TrucksService {
       },
       select: {
         name: true,
-        plate:true
+        plate: true,
       },
       orderBy: { plate: 'asc' },
     });
@@ -90,7 +91,7 @@ export class TrucksService {
         },
         data: {
           name: data.name,
-          capacities: data.capacities
+          capacities: data.capacities,
         },
       });
 
@@ -168,4 +169,105 @@ export class TrucksService {
       throw new InternalServerErrorException('Error al eliminar el camión');
     }
   }
+
+  async calcBalancePerTruck({ objetiveWeek }: CalcBalanceDto) {
+    const week = objetiveWeek ? new Date(objetiveWeek) : new Date();
+
+    const startOfWeek = startOfWeekSaturday(week);
+    const endOfWeek = endOfWeekFriday(startOfWeek);
+    
+    const trucks = await this.prisma.truck.findMany({
+      where: {
+        status: true,
+        OR: [
+          {
+            travels: {
+              some: {
+                invalid: false,
+                travelDate: {
+                  gte: startOfWeek,
+                  lte: endOfWeek,
+                },
+              },
+            },
+          },
+          {
+            expenses: {
+              some: {
+                deleted: false,
+                date: {
+                  gte: startOfWeek,
+                  lte: endOfWeek,
+                },
+              },
+            },
+          },
+        ],
+      },
+      include: {
+        travels: {
+          where: {
+            invalid: false,
+            travelDate: {
+              gte: startOfWeek,
+              lte: endOfWeek,
+            },
+          },
+          select: {
+            noIVAmount: true,
+          },
+        },
+        expenses: {
+          where: {
+            deleted: false,
+            date: {
+              gte: startOfWeek,
+              lte: endOfWeek,
+            },
+          },
+          select: {
+            amount: true,
+          },
+        },
+      },
+    });
+
+    const balancePerTruck = trucks.map((truck) => {
+      const totalTravel = truck.travels.reduce(
+        (acc, t) => acc + t.noIVAmount,
+        0,
+      );
+      const totalExpenses = truck.expenses.reduce(
+        (acc, e) => acc + e.amount,
+        0,
+      );
+
+      return {
+        truck: truck.name,
+        totalTravel,
+        totalExpenses,
+        balance: totalTravel - totalExpenses,
+      };
+    });
+
+    return balancePerTruck;
+  }
+}
+function startOfWeekSaturday(date: Date) {
+  const d = new Date(date);
+
+  const day = d.getUTCDay(); 
+  const diff = day === 6 ? 0 : day + 1;
+
+  d.setUTCDate(d.getUTCDate() - diff);
+  d.setUTCHours(0, 0, 0, 0);
+  return d;
+}
+
+function endOfWeekFriday(startOfWeek: Date) {
+  const d = new Date(startOfWeek);
+
+  d.setUTCDate(d.getUTCDate() + 6);
+  d.setUTCHours(23, 59, 59, 999);
+  return d;
 }
