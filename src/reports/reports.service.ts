@@ -8,7 +8,7 @@ import { PrismaService } from 'src/prismaConfig/prisma.service';
 import * as ExcelJS from 'exceljs';
 import { ExternalReportDto, InternalReportDto } from './dto/report.filters.dto';
 import * as Handlebars from 'handlebars';
-import { chromium } from 'playwright';
+import { chromium } from 'playwright-chromium';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Prisma, Travel } from 'generated/prisma/client';

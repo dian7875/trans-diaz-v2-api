@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as ExcelJS from 'exceljs';
 import * as Handlebars from 'handlebars';
-import { chromium } from 'playwright';
+import { chromium } from 'playwright-chromium';
 import * as path from 'path';
 import * as fs from 'fs';
 import { format } from '@formkit/tempo';
