@@ -5,11 +5,11 @@ import {
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateTravelDto } from './dto/create-travel.dto';
+import { CreateExpenseDto, CreateTravelDto } from './dto/create-travel.dto';
 import { UpdateTravelDto } from './dto/update-travel.dto';
 import { PrismaService } from 'src/prismaConfig/prisma.service';
 import { responseInterface } from 'src/common/response.interface';
-import { Prisma } from 'generated/prisma/client';
+import { Prisma, Travel } from 'generated/prisma/client';
 import { formatPaginatedResponse } from 'src/utils/findsResponseFormatter';
 import { TravelFiltersDto } from './dto/travels-filters.dto';
 
@@ -17,18 +17,43 @@ import { TravelFiltersDto } from './dto/travels-filters.dto';
 export class TravelsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private mergeExpenses(
+    expenses: CreateExpenseDto[],
+    travelDate: Date,
+    truckPlate?: string,
+  ) {
+    const map = new Map<string, number>();
+
+    for (const e of expenses) {
+      const key = e.name.trim().toLowerCase();
+      map.set(key, (map.get(key) ?? 0) + e.amount);
+    }
+
+    return Array.from(map.entries()).map(([name, amount]) => ({
+      name,
+      amount,
+      date: travelDate,
+      truckPlate: truckPlate,
+    }));
+  }
+
   async create({
     driverId,
     clientId,
     truckPlate,
     invoiceId,
+    expenses,
     ...data
   }: CreateTravelDto): Promise<responseInterface> {
     try {
       await this.prisma.travel.create({
         data: {
           ...data,
-
+          ...(expenses?.length && {
+            expenses: {
+              create: this.mergeExpenses(expenses, data.travelDate, truckPlate),
+            },
+          }),
           ...(clientId && {
             client: { connect: { id: clientId } },
           }),
@@ -79,6 +104,15 @@ export class TravelsService {
         truck: { select: { name: true } },
         driver: { select: { name: true } },
         client: { select: { name: true } },
+        expenses: {
+          where: {
+            deleted: false,
+          },
+          select: {
+            amount: true,
+            name: true,
+          },
+        },
       },
       orderBy: { travelDate: 'desc' },
       skip,
@@ -174,5 +208,39 @@ export class TravelsService {
         'Error al cambiar el estado del viaje.',
       );
     }
+  }
+
+  async findTravelByNumberOrDest(keyword?: string): Promise<Partial<Travel>[]> {
+    return this.prisma.travel.findMany({
+      where: {
+        invalid: false,
+        ...(keyword && {
+          OR: [
+            {
+              travelCode: {
+                contains: keyword,
+                mode: 'insensitive',
+              },
+            },
+            {
+              destination: {
+                contains: keyword,
+                mode: 'insensitive',
+              },
+            },
+          ],
+        }),
+      },
+      select: {
+        id: true,
+        travelCode: true,
+        destination: true,
+        travelDate: true,
+      },
+      take: 3,
+      orderBy: {
+        travelDate: 'desc',
+      },
+    });
   }
 }

@@ -1,6 +1,29 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsBoolean, IsDate, IsNotEmpty, IsOptional, IsInt, IsString, Min } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
+  IsBoolean,
+  IsDate,
+  IsNotEmpty,
+  IsOptional,
+  IsInt,
+  IsString,
+  Min,
+  ValidateNested,
+  IsArray,
+  IsNumber,
+} from 'class-validator';
+
+export class CreateExpenseDto {
+  @ApiProperty({ example: 'Peaje' })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({ example: 3500 })
+  @IsNumber()
+  @Min(0)
+  amount: number;
+}
 
 export class CreateTravelDto {
   @ApiProperty()
@@ -66,4 +89,12 @@ export class CreateTravelDto {
   @IsOptional()
   @IsInt()
   invoiceId?: number;
+
+  @ApiPropertyOptional({ type: [CreateExpenseDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateExpenseDto)
+  expenses?: CreateExpenseDto[];
+  
 }

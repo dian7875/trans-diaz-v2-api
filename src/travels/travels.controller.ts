@@ -12,6 +12,7 @@ import { TravelsService } from './travels.service';
 import { CreateTravelDto } from './dto/create-travel.dto';
 import { UpdateTravelDto } from './dto/update-travel.dto';
 import { TravelFiltersDto } from './dto/travels-filters.dto';
+import { KeywordDto } from 'src/common/KeywordFilter.dto';
 
 @Controller('travels')
 export class TravelsController {
@@ -25,6 +26,12 @@ export class TravelsController {
   @Get()
   findAll(@Query() filters: TravelFiltersDto) {
     return this.travelsService.findAll(filters);
+  }
+
+  @Get('options')
+  findOptions(@Query() {keyword}: KeywordDto) {
+    console.log(keyword)
+    return this.travelsService.findTravelByNumberOrDest(keyword);
   }
 
   @Get(':id')

@@ -244,6 +244,9 @@ export class InvoicesService {
         withIVAmount: true,
         noIVAmount: true,
       },
+      orderBy: {
+        id: 'asc',
+      },
     });
 
     const totalWithoutIVA = travels.reduce((sum, t) => sum + t.noIVAmount, 0);
