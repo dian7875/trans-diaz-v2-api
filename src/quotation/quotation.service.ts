@@ -95,7 +95,7 @@ export class QuotationService {
 
   async generateQuotation(dto: CreateQuotationDto) {
     const quotationDate = this.formatDate(new Date());
-    return await this.GenerateDoc('QuotationTemplate', {
+    return await this.GenerateDoc('quotationTemplate', {
       ...dto,
       quotationDate,
     });
