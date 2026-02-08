@@ -65,7 +65,7 @@ export class QuotationService {
 
     const templatePath = path.join(
       __dirname.toLocaleLowerCase(),
-      'Template',
+      'template',
       `${templateName}.hbs`,
     );
 
