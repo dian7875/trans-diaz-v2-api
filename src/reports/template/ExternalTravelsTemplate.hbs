@@ -4,7 +4,7 @@
     <title>Reporte de viajes</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: 'Noto Sans', sans-serif;
         font-size: 12px;
         margin: 20px;
       }
@@ -93,17 +93,17 @@
           <tr>
             <td>{{this.travelCode}}</td>
             <td>{{formatOnlyDate this.travelDate}}</td>
-            <td>{{formatCurrency this.noIVAmount}}</td>
-            <td>{{formatCurrency this.IVAmount}}</td>
-            <td>{{formatCurrency this.withIVAmount}}</td>
+            <td>&#8353; {{formatCurrency this.noIVAmount}}</td>
+            <td>&#8353; {{formatCurrency this.IVAmount}}</td>
+            <td>&#8353; {{formatCurrency this.withIVAmount}}</td>
           </tr>
         {{/each}}
 
         <tr>
           <td colspan='2'><strong>Total</strong></td>
-          <td><strong>{{formatCurrency totals.totalNoIVAmount}}</strong></td>
-          <td><strong>{{formatCurrency totals.totalIVAmount}}</strong></td>
-          <td><strong>{{formatCurrency totals.totalWithIVAmount}}</strong></td>
+          <td><strong>&#8353; {{formatCurrency totals.totalNoIVAmount}}</strong></td>
+          <td><strong>&#8353; {{formatCurrency totals.totalIVAmount}}</strong></td>
+          <td><strong>&#8353; {{formatCurrency totals.totalWithIVAmount}}</strong></td>
         </tr>
       </tbody>
     </table>

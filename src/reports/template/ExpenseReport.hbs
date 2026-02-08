@@ -4,7 +4,7 @@
     <title>Reporte de gastos por camión</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: 'Noto Sans', sans-serif;
         font-size: 12px;
         margin: 20px;
       }
@@ -92,13 +92,13 @@
               <td>{{formatOnlyDate this.date}}</td>
               <td>{{this.travelCode}}-{{this.destination}}</td>
               <td>{{this.name}}</td>
-              <td>{{formatCurrency this.amount}}</td>
+              <td>&#8353; {{formatCurrency this.amount}}</td>
             </tr>
           {{/each}}
 
           <tr>
             <td colspan='3'><strong>Total gastos camión</strong></td>
-            <td><strong>{{formatCurrency this.totalExpenses}}</strong></td>
+            <td><strong>&#8353; {{formatCurrency this.totalExpenses}}</strong></td>
           </tr>
         </tbody>
       </table>
@@ -110,7 +110,7 @@
       <tbody>
         <tr>
           <td><strong>Total gastos</strong></td>
-          <td><strong>{{formatCurrency totals.totalExpenses}}</strong></td>
+          <td><strong>&#8353; {{formatCurrency totals.totalExpenses}}</strong></td>
         </tr>
       </tbody>
     </table>

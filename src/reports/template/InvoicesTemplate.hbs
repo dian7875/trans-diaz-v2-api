@@ -4,7 +4,7 @@
     <title>Reporte de transportes pendientes de pago</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: 'Noto Sans', sans-serif;
         font-size: 12px;
         margin: 20px;
       }
@@ -87,13 +87,13 @@
             <td>{{this.invoiceNumber}}</td>
             <td>{{formatOnlyDate this.invoiceDate}}</td>
             <td>{{formatOnlyDate this.dueDate}}</td>
-            <td>{{formatCurrency this.invoiceAmount}}</td>
+            <td>&#8353; {{formatCurrency this.invoiceAmount}}</td>
           </tr>
         {{/each}}
 
         <tr>
           <td colspan='3'><strong>Total</strong></td>
-          <td><strong>{{formatCurrency total}}</strong></td>
+          <td><strong>&#8353; {{formatCurrency total}}</strong></td>
         </tr>
       </tbody>
     </table>

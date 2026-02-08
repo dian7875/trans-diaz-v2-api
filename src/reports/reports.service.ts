@@ -32,11 +32,8 @@ export class ReportsService {
       },
     );
     Handlebars.registerHelper('formatCurrency', (value: number) => {
-      if (typeof value !== 'number') return '₡0';
-
+      if (typeof value !== 'number') return '0';
       return value.toLocaleString('es-CR', {
-        style: 'currency',
-        currency: 'CRC',
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
       });

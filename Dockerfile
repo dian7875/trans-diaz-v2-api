@@ -43,7 +43,11 @@ RUN apt-get update && apt-get install -y \
   libpangocairo-1.0-0 \
   fonts-liberation \
   ca-certificates \
+  fonts-noto \
+  fonts-noto-cjk \
+  fonts-noto-color-emoji \
   && rm -rf /var/lib/apt/lists/*
+
 
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
