@@ -75,7 +75,7 @@ class QuotationClient {
     example: 'admin@grupopumas.cr',
   })
   @IsOptional()
-  @IsEmail()
+  @IsString()
   clientEmail?: string;
 
   @ApiPropertyOptional({
