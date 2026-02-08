@@ -179,9 +179,9 @@
           {{#each items}}
             <tr>
               <td>{{this.description}}</td>
-              <td class='right'>₡ {{formatCurrency this.noIVAmount}}</td>
-              <td class='right'>₡ {{formatCurrency this.IVAmount}}</td>
-              <td class='right'>₡ {{formatCurrency this.withIVAmount}}</td>
+              <td class='right'>{{formatCurrency this.noIVAmount}}</td>
+              <td class='right'>{{formatCurrency this.IVAmount}}</td>
+              <td class='right'>{{formatCurrency this.withIVAmount}}</td>
             </tr>
           {{/each}}
         </tbody>
@@ -190,16 +190,16 @@
       <table class='totals'>
         <tr>
           <td class='label'>Subtotal:</td>
-          <td class='value'>₡ {{formatCurrency totals.totalNoIVAmount}}</td>
+          <td class='value'>{{formatCurrency totals.totalNoIVAmount}}</td>
         </tr>
         <tr>
           <td class='label'>IVA:</td>
-          <td class='value'>₡ {{formatCurrency totals.totalIVAmount}}</td>
+          <td class='value'>{{formatCurrency totals.totalIVAmount}}</td>
         </tr>
         <tr>
           <td class='label'>Total:</td>
           <td class='value'>
-            <strong>₡ {{formatCurrency totals.totalWithIVAmount}}</strong>
+            <strong>{{formatCurrency totals.totalWithIVAmount}}</strong>
           </td>
         </tr>
       </table>

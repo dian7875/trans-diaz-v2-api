@@ -87,13 +87,13 @@
             <td>{{this.invoiceNumber}}</td>
             <td>{{formatOnlyDate this.invoiceDate}}</td>
             <td>{{formatOnlyDate this.dueDate}}</td>
-            <td>₡ {{formatCurrency this.invoiceAmount}}</td>
+            <td>{{formatCurrency this.invoiceAmount}}</td>
           </tr>
         {{/each}}
 
         <tr>
           <td colspan='3'><strong>Total</strong></td>
-          <td><strong>₡ {{formatCurrency total}}</strong></td>
+          <td><strong>{{formatCurrency total}}</strong></td>
         </tr>
       </tbody>
     </table>

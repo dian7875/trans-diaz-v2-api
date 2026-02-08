@@ -70,27 +70,27 @@
               <td>{{formatOnlyDate this.travelDate}}</td>
               <td>{{this.client.name}}</td>
               <td>{{this.driver.name}}</td>
-              <td>₡ {{formatCurrency this.noIVAmount}}</td>
-              <td>₡ {{formatCurrency this.IVAmount}}</td>
-              <td>₡ {{formatCurrency this.withIVAmount}}</td>
+              <td>{{formatCurrency this.noIVAmount}}</td>
+              <td>{{formatCurrency this.IVAmount}}</td>
+              <td>{{formatCurrency this.withIVAmount}}</td>
             </tr>
           {{/each}}
 
           <tr>
             <td colspan='4'><strong>Total camión</strong></td>
-            <td><strong>₡ {{formatCurrency this.totals.totalNoIVAmount}}</strong></td>
-            <td><strong>₡ {{formatCurrency this.totals.totalIVAmount}}</strong></td>
-            <td><strong>₡ {{formatCurrency this.totals.totalWithIVAmount}}</strong></td>
+            <td><strong>{{formatCurrency this.totals.totalNoIVAmount}}</strong></td>
+            <td><strong>{{formatCurrency this.totals.totalIVAmount}}</strong></td>
+            <td><strong>{{formatCurrency this.totals.totalWithIVAmount}}</strong></td>
           </tr>
 
           <tr>
             <td colspan='6'><strong>Total gastos</strong></td>
-            <td><strong>₡ {{formatCurrency this.totalExpenses}}</strong></td>
+            <td><strong>{{formatCurrency this.totalExpenses}}</strong></td>
           </tr>
 
           <tr>
             <td colspan='6'><strong>Ingreso neto</strong></td>
-            <td><strong>₡ {{formatCurrency this.remainingAmount}}</strong></td>
+            <td><strong>{{formatCurrency this.remainingAmount}}</strong></td>
           </tr>
         </tbody>
       </table>
@@ -102,23 +102,23 @@
       <tbody>
         <tr>
           <td>Total sin IVA</td>
-          <td>₡ {{formatCurrency totals.totalNoIVAmount}}</td>
+          <td>{{formatCurrency totals.totalNoIVAmount}}</td>
         </tr>
         <tr>
           <td>Total IVA</td>
-          <td>₡ {{formatCurrency totals.totalIVAmount}}</td>
+          <td>{{formatCurrency totals.totalIVAmount}}</td>
         </tr>
         <tr>
           <td>Total con IVA</td>
-          <td>₡ {{formatCurrency totals.totalWithIVAmount}}</td>
+          <td>{{formatCurrency totals.totalWithIVAmount}}</td>
         </tr>
         <tr>
           <td>Total gastos</td>
-          <td>₡ {{formatCurrency totals.totalExpenses}}</td>
+          <td>{{formatCurrency totals.totalExpenses}}</td>
         </tr>
         <tr>
           <td><strong>Ingreso neto real</strong></td>
-          <td><strong>₡ {{formatCurrency totals.netIncome}}</strong></td>
+          <td><strong>{{formatCurrency totals.netIncome}}</strong></td>
         </tr>
       </tbody>
     </table>
