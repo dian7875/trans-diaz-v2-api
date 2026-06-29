@@ -81,6 +81,7 @@
       <thead>
         <tr>
           <th>Factura</th>
+          <th>Destino</th>
           <th>Fecha</th>
           <th>Monto sin IVA</th>
           <th>IVA</th>
@@ -92,6 +93,7 @@
         {{#each travels}}
           <tr>
             <td>{{this.travelCode}}</td>
+            <td>{{this.destination}}</td>
             <td>{{formatOnlyDate this.travelDate}}</td>
             <td>&#8353; {{formatCurrency this.noIVAmount}}</td>
             <td>&#8353; {{formatCurrency this.IVAmount}}</td>
@@ -100,7 +102,7 @@
         {{/each}}
 
         <tr>
-          <td colspan='2'><strong>Total</strong></td>
+          <td colspan='3'><strong>Total</strong></td>
           <td><strong>&#8353; {{formatCurrency totals.totalNoIVAmount}}</strong></td>
           <td><strong>&#8353; {{formatCurrency totals.totalIVAmount}}</strong></td>
           <td><strong>&#8353; {{formatCurrency totals.totalWithIVAmount}}</strong></td>
