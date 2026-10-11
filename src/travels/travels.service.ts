@@ -139,6 +139,11 @@ export class TravelsService {
             name: true,
           },
         },
+        invoice: {
+          select: {
+            invoiceNumber: true,
+          },
+        },
       },
       orderBy: { travelDate: 'desc' },
       skip,
@@ -158,6 +163,11 @@ export class TravelsService {
         driver: { select: { name: true } },
         client: { select: { name: true } },
         expenses: true,
+        invoice: {
+          select: {
+            invoiceNumber: true,
+          },
+        },
       },
     });
 
