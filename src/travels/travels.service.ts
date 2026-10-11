@@ -88,6 +88,9 @@ export class TravelsService {
     truckPlate,
     driverId,
     clientId,
+    keyword,
+    dateFrom,
+    dateTo,
   }: TravelFiltersDto) {
     const skip = (page - 1) * limit;
     const take = limit;
@@ -96,6 +99,29 @@ export class TravelsService {
       ...(truckPlate && { truckPlate }),
       ...(driverId && { driverId }),
       ...(clientId && { clientId }),
+      ...(keyword && {
+        OR: [
+          {
+            travelCode: {
+              contains: keyword,
+              mode: 'insensitive',
+            },
+          },
+          {
+            destination: {
+              contains: keyword,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      }),
+
+      ...((dateFrom || dateTo) && {
+        travelDate: {
+          ...(dateFrom && { gte: dateFrom }),
+          ...(dateTo && { lte: dateTo }),
+        },
+      }),
     };
 
     const data = await this.prisma.travel.findMany({
